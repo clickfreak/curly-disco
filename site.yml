@@ -4,7 +4,7 @@
   hosts: all
   gather_facts: no
   connection: local
-  
+
   tasks:
 
     - name: Generate SSH key
@@ -26,6 +26,6 @@
         plan: huge
         key_name: chromebook_key
         image: ubuntu_16.04_64_001_master
-        location: spb0
+        location: msk0
         power_state: started
         state: present
