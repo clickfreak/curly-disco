@@ -1,0 +1,3 @@
+[submodule "library/vscale"]
+	path = library/vscale
+	url = https://github.com/vscale/ansible-vscale-modules

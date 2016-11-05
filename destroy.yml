@@ -1,0 +1,17 @@
+---
+
+- name: create scalets
+  hosts: all
+  gather_facts: no
+  connection: local
+  
+  tasks:
+
+    - name: Destroy scalets
+      vscale_scalets:
+        name: "{{ inventory_hostname }}"
+        plan: huge
+        key_name: chromebook_key
+        image: ubuntu_16.04_64_001_master
+        location: msk0
+        state: absent

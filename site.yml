@@ -1,0 +1,31 @@
+---
+
+- name: create scalets
+  hosts: all
+  gather_facts: no
+  connection: local
+  
+  tasks:
+
+    - name: Generate SSH key
+      shell: ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N ""
+      args:
+        creates: ~/.ssh/id_rsa
+      run_once: yes
+
+    - name: Add our public ssh key into Vscale
+      vscale_ssh:
+        name: chromebook_key
+        public_key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+        state: present
+      run_once: yes
+
+    - name: create scalets
+      vscale_scalets:
+        name: "{{ inventory_hostname }}"
+        plan: huge
+        key_name: chromebook_key
+        image: ubuntu_16.04_64_001_master
+        location: spb0
+        power_state: started
+        state: present
