@@ -6,4 +6,4 @@
     exit 1
 }
 
-ansible-playbook destroy.yml -i hosts
+ansible-playbook destroy.yml -i hosts $@

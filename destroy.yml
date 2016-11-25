@@ -13,5 +13,5 @@
         plan: huge
         key_name: chromebook_key
         image: ubuntu_16.04_64_001_master
-        location: msk0
+        location: "{{ node_location }}"
         state: absent

@@ -1,7 +1,7 @@
 ---
 
-- name: create scalets
-  hosts: all
+- name: Create scalet
+  hosts: tests
   gather_facts: no
   connection: local
 
@@ -15,17 +15,62 @@
 
     - name: Add our public ssh key into Vscale
       vscale_ssh:
-        name: chromebook_key
+        name: "{{ vscale_key_name }}"
         public_key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
         state: present
       run_once: yes
 
-    - name: create scalets
+    - name: Create scalet
       vscale_scalets:
         name: "{{ inventory_hostname }}"
-        plan: huge
-        key_name: chromebook_key
+        plan: small
+        key_name: "{{ vscale_key_name }}"
         image: ubuntu_16.04_64_001_master
-        location: msk0
-        power_state: started
+        location: "{{ node_location }}"
         state: present
+        power_state: "started"
+        collect_facts: yes
+      register: scalet
+
+    - name: Set IP address in inventory
+      set_fact:
+        ansible_ssh_host: "{{ scalet['scalet']['public_address']['address'] }}"
+
+    - debug:
+        msg: "{{ scalet }}"
+
+    - name: Waiting for host
+      wait_for:
+        host: "{{ scalet['scalet']['public_address']['address'] }}"
+        port: 22
+        delay: 2
+
+# - name: Bootstrap python 2.7 on scalet with Ubuntu 16.04
+#   hosts: highload
+#   user: root
+#   gather_facts: no
+# 
+#   tasks:
+#     - name: Install python for Ansible
+#       raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+#       changed_when: False
+# 
+# - name: Configure scalet
+#   hosts: highload
+#   user: root
+#   gather_facts: yes
+# 
+#   tasks:
+#     - name: Install nginx
+#       apt:
+#         pkg: nginx
+#         state: installed
+# 
+#     - name: Send instructions page into scalet
+#       copy:
+#         src: files/
+#         dest: /var/www/html/
+# 
+#     - name: instructions
+#       debug:
+#         msg: "Please open in browser http://{{ ansible_ssh_host }}/"

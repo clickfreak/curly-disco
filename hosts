@@ -1,2 +1,9 @@
-[highload]
-instance[01:15].your-app.highload.vscale.io
+[tests:children]
+spb_nodes
+msk_nodes
+
+[spb_nodes]
+instance[01:10].spb.tests.clickfreak.pw
+
+[msk_nodes]
+instance[01:10].msk.tests.clickfreak.pw
